@@ -6,14 +6,19 @@ import '../widgets/summary_card.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 
-
 class HomeScreen extends StatefulWidget {
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final List<Expense> _expenses = [];
+  late Box<Expense> _expenseBox;
+  @override
+  void initState() {
+    super.initState();
+    _expenseBox = Hive.box<Expense>('expensesBox');
+  }
+  List<Expense> get _expenses => _expenseBox.values.toList();
   String _selectedCategory = 'All';
 
   List<String> get _allCategories {
@@ -39,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     if (result != null) {
       setState(() {
-        _expenses.add(
+        _expenseBox.add(
           Expense(
             amount: result['amount'],
             category: result['category'],
