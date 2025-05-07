@@ -3,6 +3,7 @@ import '../widgets/add_expense_form.dart';
 import '../widgets/expense_tile.dart';
 import '../models/expense.dart';
 import '../widgets/summary_card.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 
 
