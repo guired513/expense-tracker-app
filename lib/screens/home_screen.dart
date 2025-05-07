@@ -18,6 +18,10 @@ class _HomeScreenState extends State<HomeScreen> {
   List<String> get _allCategories {
     return ['All', ..._expenses.map((e) => e.category).toSet()];
   }
+  List<Expense> get _filteredExpenses {
+    if (_selectedCategory == 'All') return _expenses;
+    return _expenses.where((e) => e.category == _selectedCategory).toList();
+  }
 
   void _openAddExpenseSheet() async {
     final result = await showModalBottomSheet<Map<String, dynamic>>(
@@ -56,17 +60,18 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Column(
         children: [
           _buildSummaryCards(),
+          _buildFilterChips(),
           Expanded(
-            child: _expenses.isEmpty
+            child: _filteredExpenses.isEmpty
                 ? Center(
                     child: Text(
-                      'No expenses yet.',
+                      'No expenses found.',
                       style: TextStyle(fontSize: 18, color: Colors.grey),
                     ),
                   )
                 : ListView.builder(
-                    itemCount: _expenses.length,
-                    itemBuilder: (ctx, i) => ExpenseTile(expense: _expenses[i]),
+                    itemCount: _filteredExpenses.length,
+                    itemBuilder: (ctx, i) => ExpenseTile(expense: _filteredExpenses[i]),
                   ),
           ),
         ],
