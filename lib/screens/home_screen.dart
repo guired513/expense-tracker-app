@@ -64,4 +64,53 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+  Widget _buildSummaryCards() {
+    if (_expenses.isEmpty) return SizedBox.shrink();
+
+    double total = 0;
+    Map<String, double> categoryTotals = {};
+    Expense? biggest;
+
+    for (var e in _expenses) {
+      total += e.amount;
+      categoryTotals[e.category] = (categoryTotals[e.category] ?? 0) + e.amount;
+      if (biggest == null || e.amount > biggest.amount) {
+        biggest = e;
+      }
+    }
+
+    String topCategory = categoryTotals.entries
+        .reduce((a, b) => a.value > b.value ? a : b)
+        .key;
+
+    return Container(
+      height: 140,
+      margin: const EdgeInsets.symmetric(vertical: 12),
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        children: [
+          SummaryCard(
+            title: 'Total Spent',
+            value: '₱${total.toStringAsFixed(2)}',
+            icon: Icons.savings,
+          ),
+          SummaryCard(
+            title: 'Top Category',
+            value: topCategory,
+            icon: Icons.category,
+            color: Colors.orange,
+          ),
+          if (biggest != null)
+            SummaryCard(
+              title: 'Biggest Expense',
+              value: '₱${biggest.amount.toStringAsFixed(2)}',
+              icon: Icons.trending_up,
+              color: Colors.red,
+            ),
+        ],
+      ),
+    );
+  }
+
+
 }
