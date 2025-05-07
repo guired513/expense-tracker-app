@@ -13,6 +13,11 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final List<Expense> _expenses = [];
+  String _selectedCategory = 'All';
+
+  List<String> get _allCategories {
+    return ['All', ..._expenses.map((e) => e.category).toSet()];
+  }
 
   void _openAddExpenseSheet() async {
     final result = await showModalBottomSheet<Map<String, dynamic>>(
@@ -119,6 +124,33 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+
+  Widget _buildFilterChips() {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: Row(
+        children: _allCategories.map((category) {
+          final isSelected = _selectedCategory == category;
+          return Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: ChoiceChip(
+              label: Text(category),
+              selected: isSelected,
+              onSelected: (_) {
+                setState(() {
+                  _selectedCategory = category;
+                });
+              },
+              selectedColor: Colors.indigo,
+              labelStyle: TextStyle(color: isSelected ? Colors.white : Colors.black),
+            ),
+          );
+        }).toList(),
+      ),
+    );
+  }
+
 
 
 }
