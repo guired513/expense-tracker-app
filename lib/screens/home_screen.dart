@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../widgets/add_expense_form.dart';
 import '../widgets/expense_tile.dart';
 import '../models/expense.dart';
+import '../widgets/summary_card.dart';
 
 
 
@@ -47,17 +48,24 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Text('Expense Tracker'),
         centerTitle: true,
       ),
-      body: _expenses.isEmpty
-          ? Center(
-              child: Text(
-                'No expenses yet.',
-                style: TextStyle(fontSize: 18, color: Colors.grey),
-              ),
-            )
-          : ListView.builder(
-              itemCount: _expenses.length,
-              itemBuilder: (ctx, i) => ExpenseTile(expense: _expenses[i]),
-            ),
+      body: Column(
+        children: [
+          _buildSummaryCards(),
+          Expanded(
+            child: _expenses.isEmpty
+                ? Center(
+                    child: Text(
+                      'No expenses yet.',
+                      style: TextStyle(fontSize: 18, color: Colors.grey),
+                    ),
+                  )
+                : ListView.builder(
+                    itemCount: _expenses.length,
+                    itemBuilder: (ctx, i) => ExpenseTile(expense: _expenses[i]),
+                  ),
+          ),
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: _openAddExpenseSheet,
         child: Icon(Icons.add),
