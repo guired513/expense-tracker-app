@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../widgets/add_expense_form.dart';
+
 
 class HomeScreen extends StatelessWidget {
   @override
@@ -16,7 +18,17 @@ class HomeScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Will open add-expense dialog in next phase
+          showModalBottomSheet(
+            context: context,
+            isScrollControlled: true,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+            ),
+            builder: (_) => Padding(
+              padding: MediaQuery.of(context).viewInsets,
+              child: AddExpenseForm(),
+            ),
+          );
         },
         child: Icon(Icons.add),
       ),

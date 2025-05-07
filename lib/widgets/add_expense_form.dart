@@ -1,0 +1,106 @@
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
+class AddExpenseForm extends StatefulWidget {
+  @override
+  _AddExpenseFormState createState() => _AddExpenseFormState();
+}
+
+class _AddExpenseFormState extends State<AddExpenseForm> {
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _amountController = TextEditingController();
+  final TextEditingController _descController = TextEditingController();
+
+  String? _selectedCategory;
+  DateTime _selectedDate = DateTime.now();
+
+  final List<String> _categories = ['Food', 'Transport', 'Bills', 'Shopping', 'Others'];
+
+  void _submitForm() {
+    if (_formKey.currentState!.validate() && _selectedCategory != null) {
+      final expense = {
+        'amount': double.parse(_amountController.text),
+        'description': _descController.text,
+        'category': _selectedCategory!,
+        'date': _selectedDate,
+      };
+
+      Navigator.of(context).pop(expense);
+    }
+  }
+
+  void _presentDatePicker() async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: _selectedDate,
+      firstDate: DateTime(2020),
+      lastDate: DateTime.now(),
+    );
+
+    if (picked != null) {
+      setState(() {
+        _selectedDate = picked;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Form(
+        key: _formKey,
+        child: Wrap(
+          runSpacing: 16,
+          children: [
+            Text(
+              'Add Expense',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            TextFormField(
+              controller: _amountController,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(labelText: 'Amount'),
+              validator: (value) => value!.isEmpty ? 'Enter amount' : null,
+            ),
+            DropdownButtonFormField<String>(
+              decoration: InputDecoration(labelText: 'Category'),
+              value: _selectedCategory,
+              items: _categories
+                  .map((cat) => DropdownMenuItem(value: cat, child: Text(cat)))
+                  .toList(),
+              onChanged: (val) => setState(() => _selectedCategory = val),
+              validator: (val) => val == null ? 'Select a category' : null,
+            ),
+            TextFormField(
+              controller: _descController,
+              decoration: InputDecoration(labelText: 'Description'),
+              validator: (value) => value!.isEmpty ? 'Enter description' : null,
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    'Date: ${DateFormat.yMMMd().format(_selectedDate)}',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ),
+                TextButton(
+                  onPressed: _presentDatePicker,
+                  child: Text('Change Date'),
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                TextButton(onPressed: () => Navigator.pop(context), child: Text('Cancel')),
+                ElevatedButton(onPressed: _submitForm, child: Text('Save')),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
