@@ -8,7 +8,7 @@ import '../models/income.dart';
 import '../widgets/add_income_form.dart';
 import 'package:expense_tracker_app/screens/category_screen.dart';
 import 'package:expense_tracker_app/screens/analytics_screen.dart';
-
+import 'package:intl/intl.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -18,6 +18,8 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   late Box<Expense> _expenseBox;
   late Box<Income> _incomeBox;
+  DateTime? _selectedDate;
+
   @override
   void initState() {
     super.initState();
@@ -64,11 +66,27 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final expensesToShow = _selectedDate == null
+      ? _expenses
+      : _expenses.where((e) =>
+          e.date.year == _selectedDate!.year &&
+          e.date.month == _selectedDate!.month &&
+          e.date.day == _selectedDate!.day
+        ).toList();
     return Scaffold(
       appBar: AppBar(
         title: Text('Expense Tracker'),
         centerTitle: true,
          actions: [
+          IconButton(
+            icon: Icon(Icons.clear),
+            onPressed: () {
+              setState(() {
+                _selectedDate = null;
+              });
+            },
+          ),
+
           IconButton(
             icon: Icon(Icons.pie_chart),
             onPressed: () {
@@ -114,9 +132,19 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       body: Column(
+        
         children: [
           _buildSummaryCards(),
           _buildFilterChips(),
+          if (_selectedDate != null)
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Text(
+              'Filtered Date: ${DateFormat.yMMMMd().format(_selectedDate!)}\n'
+              'Total: ₱${expensesToShow.fold(0.0, (double sum, e) => sum + e.amount).toStringAsFixed(2)}',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+          ),
           Expanded(
             child: _filteredExpenses.isEmpty
                 ? Center(
@@ -125,11 +153,33 @@ class _HomeScreenState extends State<HomeScreen> {
                       style: TextStyle(fontSize: 18, color: Colors.grey),
                     ),
                   )
+                  
                 : ListView.builder(
-                    itemCount: _filteredExpenses.length,
-                    itemBuilder: (ctx, i) => ExpenseTile(expense: _filteredExpenses[i]),
+                    itemCount: expensesToShow.length,
+                    itemBuilder: (context, index) {
+                      final e = expensesToShow[index];
+                      return ExpenseTile(expense: e);
+                    },
                   ),
           ),
+          IconButton(
+            icon: Icon(Icons.calendar_today),
+            onPressed: () async {
+              final picked = await showDatePicker(
+                context: context,
+                initialDate: DateTime.now(),
+                firstDate: DateTime(2022),
+                lastDate: DateTime(2100),
+              );
+
+              if (picked != null) {
+                setState(() {
+                  _selectedDate = picked;
+                });
+              }
+            },
+          ),
+
         ],
       ),
       floatingActionButton: FloatingActionButton(
