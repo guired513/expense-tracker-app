@@ -6,6 +6,8 @@ import '../widgets/summary_card.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import '../models/income.dart';
 import '../widgets/add_income_form.dart';
+import 'package:expense_tracker_app/screens/category_screen.dart';
+
 
 
 class HomeScreen extends StatefulWidget {
@@ -88,6 +90,15 @@ class _HomeScreenState extends State<HomeScreen> {
                   );
                 });
               }
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.settings),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => CategoryScreen()),
+              );
             },
           ),
         ],
