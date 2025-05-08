@@ -18,26 +18,29 @@ class CategoryAdapter extends TypeAdapter<Category> {
     };
     return Category(
       name: fields[0] as String,
-      color: fields[1] as Color,
-      icon: fields[2] as IconData,
-      budgetLimit: fields[3] as double?,
-      type: fields[4] as String,
+      colorValue: fields[1] as int,
+      iconCodePoint: fields[2] as int,
+      iconFontFamily: fields[3] as String,
+      budgetLimit: fields[4] as double?,
+      type: fields[5] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, Category obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.name)
       ..writeByte(1)
-      ..write(obj.color)
+      ..write(obj.colorValue)
       ..writeByte(2)
-      ..write(obj.icon)
+      ..write(obj.iconCodePoint)
       ..writeByte(3)
-      ..write(obj.budgetLimit)
+      ..write(obj.iconFontFamily)
       ..writeByte(4)
+      ..write(obj.budgetLimit)
+      ..writeByte(5)
       ..write(obj.type);
   }
 

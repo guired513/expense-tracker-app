@@ -20,15 +20,16 @@ class _CategoryScreenState extends State<CategoryScreen> {
   void _addCategory(String name, String type, Color color, IconData icon, double? budget) {
     final newCategory = Category(
       name: name,
-      type: type,
-      color: color,
-      icon: icon,
+      colorValue: color.value,
+      iconCodePoint: icon.codePoint,
+      iconFontFamily: icon.fontFamily ?? 'MaterialIcons',
       budgetLimit: budget,
+      type: type,
     );
-    print('Saving: $name ($type)');
+
     setState(() {
       _categoryBox.add(newCategory);
-    }); 
+    });
   }
 
   @override

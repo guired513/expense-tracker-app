@@ -9,22 +9,30 @@ class Category {
   final String name;
 
   @HiveField(1)
-  final Color color;
+  final int colorValue; // store color as int
 
   @HiveField(2)
-  final IconData icon;
+  final int iconCodePoint; // store icon code point
 
   @HiveField(3)
-  final double? budgetLimit;
+  final String iconFontFamily; // store icon font family
 
   @HiveField(4)
-  final String type; // "income" or "expense"
+  final double? budgetLimit;
+
+  @HiveField(5)
+  final String type;
 
   Category({
     required this.name,
-    required this.color,
-    required this.icon,
+    required this.colorValue,
+    required this.iconCodePoint,
+    required this.iconFontFamily,
     this.budgetLimit,
     required this.type,
   });
+
+  Color get color => Color(colorValue);
+
+  IconData get icon => IconData(iconCodePoint, fontFamily: iconFontFamily);
 }
