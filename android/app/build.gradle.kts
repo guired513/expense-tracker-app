@@ -6,6 +6,7 @@ plugins {
 }
 
 android {
+    
     namespace = "com.example.expense_tracker_app"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
@@ -29,7 +30,7 @@ android {
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
-
+    ndkVersion = "27.0.12077973"
     buildTypes {
         release {
             // TODO: Add your own signing config for the release build.

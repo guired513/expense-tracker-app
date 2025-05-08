@@ -5,6 +5,7 @@ import '../models/expense.dart';
 import '../widgets/summary_card.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import '../models/income.dart';
+import '../widgets/add_income_form.dart';
 
 
 class HomeScreen extends StatefulWidget {
