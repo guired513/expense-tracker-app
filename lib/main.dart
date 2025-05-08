@@ -2,13 +2,18 @@ import 'package:flutter/material.dart';
 import 'screens/home_screen.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'models/expense.dart';
+import 'models/income.dart';
 
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
+
   Hive.registerAdapter(ExpenseAdapter());
+  Hive.registerAdapter(IncomeAdapter()); // ✅ New line
+
   await Hive.openBox<Expense>('expensesBox');
+  await Hive.openBox<Income>('incomeBox'); // ✅ New line
 
   runApp(const MyApp());
 }

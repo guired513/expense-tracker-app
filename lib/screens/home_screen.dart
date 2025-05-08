@@ -4,6 +4,7 @@ import '../widgets/expense_tile.dart';
 import '../models/expense.dart';
 import '../widgets/summary_card.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import '../models/income.dart';
 
 
 class HomeScreen extends StatefulWidget {
@@ -13,10 +14,12 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late Box<Expense> _expenseBox;
+  late Box<Income> _incomeBox;
   @override
   void initState() {
     super.initState();
     _expenseBox = Hive.box<Expense>('expensesBox');
+    _incomeBox = Hive.box<Income>('incomeBox');
   }
   List<Expense> get _expenses => _expenseBox.values.toList();
   String _selectedCategory = 'All';
@@ -62,6 +65,31 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: Text('Expense Tracker'),
         centerTitle: true,
+         actions: [
+          IconButton(
+            icon: Icon(Icons.attach_money),
+            onPressed: () async {
+              final result = await showModalBottomSheet<Map<String, dynamic>>(
+                context: context,
+                isScrollControlled: true,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+                builder: (_) => AddIncomeForm(),
+              );
+
+              if (result != null) {
+                setState(() {
+                  _incomeBox.add(
+                    Income(
+                      amount: result['amount'],
+                      source: result['source'],
+                      date: result['date'],
+                    ),
+                  );
+                });
+              }
+            },
+          ),
+        ],
       ),
       body: Column(
         children: [
@@ -86,37 +114,52 @@ class _HomeScreenState extends State<HomeScreen> {
         onPressed: _openAddExpenseSheet,
         child: Icon(Icons.add),
       ),
+     
     );
   }
   Widget _buildSummaryCards() {
-    if (_expenses.isEmpty) return SizedBox.shrink();
+  if (_expenses.isEmpty && _incomeBox.isEmpty) return SizedBox.shrink();
 
-    double total = 0;
+    double expenseTotal = _expenses.fold(0.0, (sum, e) => sum + e.amount);
+    double incomeTotal = _incomeBox.values.fold(0.0, (sum, i) => sum + i.amount);
+    double balance = incomeTotal - expenseTotal;
+
     Map<String, double> categoryTotals = {};
     Expense? biggest;
 
     for (var e in _expenses) {
-      total += e.amount;
       categoryTotals[e.category] = (categoryTotals[e.category] ?? 0) + e.amount;
       if (biggest == null || e.amount > biggest.amount) {
         biggest = e;
       }
     }
 
-    String topCategory = categoryTotals.entries
-        .reduce((a, b) => a.value > b.value ? a : b)
-        .key;
+    String topCategory = categoryTotals.isNotEmpty
+        ? categoryTotals.entries.reduce((a, b) => a.value > b.value ? a : b).key
+        : 'N/A';
 
     return Container(
-      height: 140,
+      height: 160,
       margin: const EdgeInsets.symmetric(vertical: 12),
       child: ListView(
         scrollDirection: Axis.horizontal,
         children: [
           SummaryCard(
+            title: 'Income',
+            value: '₱${incomeTotal.toStringAsFixed(2)}',
+            icon: Icons.download,
+            color: Colors.green,
+          ),
+          SummaryCard(
             title: 'Total Spent',
-            value: '₱${total.toStringAsFixed(2)}',
+            value: '₱${expenseTotal.toStringAsFixed(2)}',
             icon: Icons.savings,
+          ),
+          SummaryCard(
+            title: 'Balance',
+            value: '₱${balance.toStringAsFixed(2)}',
+            icon: Icons.account_balance_wallet,
+            color: balance >= 0 ? Colors.green : Colors.red,
           ),
           SummaryCard(
             title: 'Top Category',
@@ -135,6 +178,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+
 
   Widget _buildFilterChips() {
     return SingleChildScrollView(
