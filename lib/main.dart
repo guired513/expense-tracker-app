@@ -3,7 +3,7 @@ import 'screens/home_screen.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'models/expense.dart';
 import 'models/income.dart';
-
+import 'models/category.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -11,7 +11,9 @@ void main() async {
 
   Hive.registerAdapter(ExpenseAdapter());
   Hive.registerAdapter(IncomeAdapter()); // ✅ New line
-
+  Hive.registerAdapter(CategoryAdapter());
+  
+  await Hive.openBox<Category>('categoriesBox');  
   await Hive.openBox<Expense>('expensesBox');
   await Hive.openBox<Income>('incomeBox'); // ✅ New line
 
