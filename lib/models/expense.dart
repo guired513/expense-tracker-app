@@ -16,9 +16,12 @@ class Expense {
   @HiveField(3)
   final DateTime date;
 
+  @HiveField(4)
+  final String categoryName;
+
   Expense({
     required this.amount,
-    required this.category,
+    required this.categoryName,
     required this.description,
     required this.date,
   });

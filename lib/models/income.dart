@@ -13,9 +13,12 @@ class Income {
   @HiveField(2)
   final DateTime date;
 
+  @HiveField(3)
+  final String categoryName;
+
   Income({
     required this.amount,
-    required this.source,
+    required this.categoryName,
     required this.date,
   });
 }

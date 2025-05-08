@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import '../models/category.dart';
 
 class AddExpenseForm extends StatefulWidget {
   @override
   _AddExpenseFormState createState() => _AddExpenseFormState();
 }
+
+
 
 class _AddExpenseFormState extends State<AddExpenseForm> {
   final _formKey = GlobalKey<FormState>();
@@ -16,12 +20,25 @@ class _AddExpenseFormState extends State<AddExpenseForm> {
 
   final List<String> _categories = ['Food', 'Transport', 'Bills', 'Shopping', 'Others'];
 
+  late Box<Category> _categoryBox;
+  List<Category> _expenseCategories = [];
+  Category? _selectedCategory;
+
+  @override
+  void initState() {
+    super.initState();
+    _categoryBox = Hive.box<Category>('categoriesBox');
+    _expenseCategories = _categoryBox.values
+        .where((c) => c.type == 'expense')
+        .toList();
+  }
+
   void _submitForm() {
     if (_formKey.currentState!.validate() && _selectedCategory != null) {
       final expense = {
         'amount': double.parse(_amountController.text),
         'description': _descController.text,
-        'category': _selectedCategory!,
+        'category': _selectedCategory!.name,
         'date': _selectedDate,
       };
 
@@ -63,11 +80,14 @@ class _AddExpenseFormState extends State<AddExpenseForm> {
               decoration: InputDecoration(labelText: 'Amount'),
               validator: (value) => value!.isEmpty ? 'Enter amount' : null,
             ),
-            DropdownButtonFormField<String>(
-              decoration: InputDecoration(labelText: 'Category'),
+            DropdownButtonFormField<Category>(
               value: _selectedCategory,
-              items: _categories
-                  .map((cat) => DropdownMenuItem(value: cat, child: Text(cat)))
+              decoration: InputDecoration(labelText: 'Category'),
+              items: _expenseCategories
+                  .map((cat) => DropdownMenuItem(
+                        value: cat,
+                        child: Text(cat.name),
+                      ))
                   .toList(),
               onChanged: (val) => setState(() => _selectedCategory = val),
               validator: (val) => val == null ? 'Select a category' : null,

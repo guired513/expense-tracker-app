@@ -53,7 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
         _expenseBox.add(
           Expense(
             amount: result['amount'],
-            category: result['category'],
+            categoryName: result['category'],
             description: result['description'],
             date: result['date'],
           ),
@@ -84,7 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   _incomeBox.add(
                     Income(
                       amount: result['amount'],
-                      source: result['source'],
+                      categoryName: result['category'],
                       date: result['date'],
                     ),
                   );
