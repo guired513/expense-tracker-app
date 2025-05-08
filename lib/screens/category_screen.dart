@@ -33,44 +33,31 @@ class _CategoryScreenState extends State<CategoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: _categoryBox.listenable(),
-      builder: (context, Box<Category> box, _) {
-        final categories = box.values.toList();
-
-        if (categories.isEmpty) {
-          return Center(child: Text('No categories yet.'));
-        }
-
-        return ListView.builder(
-          itemCount: categories.length,
-          itemBuilder: (ctx, i) {
-            final c = categories[i];
-            return ListTile(
-              leading: CircleAvatar(
-                backgroundColor: c.color,
-                child: Icon(c.icon, color: Colors.white),
-              ),
-              title: Text(c.name),
-              subtitle: Text('${c.type.capitalize()}'
-                  '${c.budgetLimit != null ? ' • Budget: ₱${c.budgetLimit!.toStringAsFixed(2)}' : ''}'),
-            );
-          },
-        );
-      },
-    );
-
     return Scaffold(
       appBar: AppBar(title: Text('Manage Categories')),
-      body: ListView.builder(
-        itemCount: categories.length,
-        itemBuilder: (ctx, i) {
-          final c = categories[i];
-          return ListTile(
-            leading: CircleAvatar(backgroundColor: c.color, child: Icon(c.icon, color: Colors.white)),
-            title: Text(c.name),
-            subtitle: Text('${c.type.capitalize()}'
-                '${c.budgetLimit != null ? ' • Budget: ₱${c.budgetLimit!.toStringAsFixed(2)}' : ''}'),
+      body: ValueListenableBuilder(
+        valueListenable: _categoryBox.listenable(),
+        builder: (context, Box<Category> box, _) {
+          final categories = box.values.toList();
+
+          if (categories.isEmpty) {
+            return Center(child: Text('No categories yet.'));
+          }
+
+          return ListView.builder(
+            itemCount: categories.length,
+            itemBuilder: (ctx, i) {
+              final c = categories[i];
+              return ListTile(
+                leading: CircleAvatar(
+                  backgroundColor: c.color,
+                  child: Icon(c.icon, color: Colors.white),
+                ),
+                title: Text(c.name),
+                subtitle: Text('${c.type.capitalize()}'
+                    '${c.budgetLimit != null ? ' • Budget: ₱${c.budgetLimit!.toStringAsFixed(2)}' : ''}'),
+              );
+            },
           );
         },
       ),
@@ -80,7 +67,9 @@ class _CategoryScreenState extends State<CategoryScreen> {
           showModalBottomSheet(
             context: context,
             isScrollControlled: true,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+            ),
             builder: (_) => CategoryForm(onSubmit: _addCategory),
           );
         },
