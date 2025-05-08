@@ -75,6 +75,8 @@ class _HomeScreenState extends State<HomeScreen> {
         ).toList();
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        foregroundColor: Theme.of(context).colorScheme.onPrimary,
         title: Text('Expense Tracker'),
         centerTitle: true,
          actions: [
