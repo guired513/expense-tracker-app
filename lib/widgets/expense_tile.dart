@@ -15,11 +15,11 @@ class ExpenseTile extends StatelessWidget {
         leading: CircleAvatar(
           backgroundColor: Colors.indigo,
           child: Text(
-            expense.category[0],
+            expense.categoryName[0],
             style: TextStyle(color: Colors.white),
           ),
         ),
-        title: Text('₱${expense.amount.toStringAsFixed(2)} - ${expense.category}'),
+        title: Text('₱${expense.amount.toStringAsFixed(2)} - ${expense.categoryName}'),
         subtitle: Text(expense.description),
         trailing: Text(DateFormat.yMMMd().format(expense.date)),
       ),

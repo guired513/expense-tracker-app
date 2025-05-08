@@ -7,7 +7,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import '../models/income.dart';
 import '../widgets/add_income_form.dart';
 import 'package:expense_tracker_app/screens/category_screen.dart';
-
+import 'package:expense_tracker_app/screens/analytics_screen.dart';
 
 
 class HomeScreen extends StatefulWidget {
@@ -69,6 +69,16 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Text('Expense Tracker'),
         centerTitle: true,
          actions: [
+          IconButton(
+            icon: Icon(Icons.pie_chart),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => AnalyticsScreen()),
+              );
+            },
+          ), // Add this line to navigate to the AnalyticsScreen
+
           IconButton(
             icon: Icon(Icons.attach_money),
             onPressed: () async {
