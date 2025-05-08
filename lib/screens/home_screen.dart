@@ -28,11 +28,11 @@ class _HomeScreenState extends State<HomeScreen> {
   String _selectedCategory = 'All';
 
   List<String> get _allCategories {
-    return ['All', ..._expenses.map((e) => e.category).toSet()];
+    return ['All', ..._expenses.map((e) => e.categoryName).toSet()];
   }
   List<Expense> get _filteredExpenses {
     if (_selectedCategory == 'All') return _expenses;
-    return _expenses.where((e) => e.category == _selectedCategory).toList();
+    return _expenses.where((e) => e.categoryName == _selectedCategory).toList();
   }
 
   void _openAddExpenseSheet() async {
@@ -140,7 +140,7 @@ class _HomeScreenState extends State<HomeScreen> {
     Expense? biggest;
 
     for (var e in _expenses) {
-      categoryTotals[e.category] = (categoryTotals[e.category] ?? 0) + e.amount;
+      categoryTotals[e.categoryName] = (categoryTotals[e.categoryName] ?? 0) + e.amount;
       if (biggest == null || e.amount > biggest.amount) {
         biggest = e;
       }

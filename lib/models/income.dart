@@ -8,13 +8,10 @@ class Income {
   final double amount;
 
   @HiveField(1)
-  final String source;
+  final String categoryName;
 
   @HiveField(2)
   final DateTime date;
-
-  @HiveField(3)
-  final String categoryName;
 
   Income({
     required this.amount,

@@ -18,7 +18,7 @@ class IncomeAdapter extends TypeAdapter<Income> {
     };
     return Income(
       amount: fields[0] as double,
-      source: fields[1] as String,
+      categoryName: fields[1] as String,
       date: fields[2] as DateTime,
     );
   }
@@ -30,7 +30,7 @@ class IncomeAdapter extends TypeAdapter<Income> {
       ..writeByte(0)
       ..write(obj.amount)
       ..writeByte(1)
-      ..write(obj.source)
+      ..write(obj.categoryName)
       ..writeByte(2)
       ..write(obj.date);
   }

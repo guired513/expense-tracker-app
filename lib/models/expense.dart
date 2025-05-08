@@ -8,7 +8,7 @@ class Expense {
   final double amount;
 
   @HiveField(1)
-  final String category;
+  final String categoryName;
 
   @HiveField(2)
   final String description;
@@ -16,8 +16,6 @@ class Expense {
   @HiveField(3)
   final DateTime date;
 
-  @HiveField(4)
-  final String categoryName;
 
   Expense({
     required this.amount,

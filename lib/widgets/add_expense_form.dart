@@ -15,7 +15,7 @@ class _AddExpenseFormState extends State<AddExpenseForm> {
   final TextEditingController _amountController = TextEditingController();
   final TextEditingController _descController = TextEditingController();
 
-  String? _selectedCategory;
+
   DateTime _selectedDate = DateTime.now();
 
   final List<String> _categories = ['Food', 'Transport', 'Bills', 'Shopping', 'Others'];
