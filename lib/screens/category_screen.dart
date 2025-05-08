@@ -25,12 +25,40 @@ class _CategoryScreenState extends State<CategoryScreen> {
       icon: icon,
       budgetLimit: budget,
     );
-    setState(() => _categoryBox.add(newCategory));
+    print('Saving: $name ($type)');
+    setState(() {
+      _categoryBox.add(newCategory);
+    }); 
   }
 
   @override
   Widget build(BuildContext context) {
-    final categories = _categoryBox.values.toList();
+    return ValueListenableBuilder(
+      valueListenable: _categoryBox.listenable(),
+      builder: (context, Box<Category> box, _) {
+        final categories = box.values.toList();
+
+        if (categories.isEmpty) {
+          return Center(child: Text('No categories yet.'));
+        }
+
+        return ListView.builder(
+          itemCount: categories.length,
+          itemBuilder: (ctx, i) {
+            final c = categories[i];
+            return ListTile(
+              leading: CircleAvatar(
+                backgroundColor: c.color,
+                child: Icon(c.icon, color: Colors.white),
+              ),
+              title: Text(c.name),
+              subtitle: Text('${c.type.capitalize()}'
+                  '${c.budgetLimit != null ? ' • Budget: ₱${c.budgetLimit!.toStringAsFixed(2)}' : ''}'),
+            );
+          },
+        );
+      },
+    );
 
     return Scaffold(
       appBar: AppBar(title: Text('Manage Categories')),
@@ -59,4 +87,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
       ),
     );
   }
+}
+extension StringCasingExtension on String {
+  String capitalize() => this.isNotEmpty ? '${this[0].toUpperCase()}${substring(1)}' : this;
 }

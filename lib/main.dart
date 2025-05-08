@@ -13,9 +13,9 @@ void main() async {
   Hive.registerAdapter(IncomeAdapter()); // ✅ New line
   Hive.registerAdapter(CategoryAdapter());
   
-  await Hive.openBox<Category>('categoriesBox');  
   await Hive.openBox<Expense>('expensesBox');
   await Hive.openBox<Income>('incomeBox'); // ✅ New line
+  await Hive.openBox<Category>('categoriesBox');  
 
   runApp(const MyApp());
 }
