@@ -4,6 +4,8 @@ import '../models/category.dart';
 import '../widgets/category_form.dart';
 
 class CategoryScreen extends StatefulWidget {
+  const CategoryScreen({super.key});
+
   @override
   State<CategoryScreen> createState() => _CategoryScreenState();
 }
@@ -79,5 +81,5 @@ class _CategoryScreenState extends State<CategoryScreen> {
   }
 }
 extension StringCasingExtension on String {
-  String capitalize() => this.isNotEmpty ? '${this[0].toUpperCase()}${substring(1)}' : this;
+  String capitalize() => isNotEmpty ? '${this[0].toUpperCase()}${substring(1)}' : this;
 }

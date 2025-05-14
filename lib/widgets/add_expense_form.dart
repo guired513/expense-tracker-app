@@ -4,6 +4,8 @@ import 'package:hive_flutter/hive_flutter.dart';
 import '../models/category.dart';
 
 class AddExpenseForm extends StatefulWidget {
+  const AddExpenseForm({super.key});
+
   @override
   _AddExpenseFormState createState() => _AddExpenseFormState();
 }

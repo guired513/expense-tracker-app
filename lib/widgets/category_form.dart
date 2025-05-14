@@ -4,7 +4,7 @@ import 'package:uuid/uuid.dart';
 class CategoryForm extends StatefulWidget {
   final Function(String name, String type, Color color, IconData icon, double? budget) onSubmit;
 
-  const CategoryForm({required this.onSubmit});
+  const CategoryForm({super.key, required this.onSubmit});
 
   @override
   State<CategoryForm> createState() => _CategoryFormState();
@@ -104,8 +104,8 @@ class _CategoryFormState extends State<CategoryForm> {
                 return GestureDetector(
                   onTap: () => setState(() => _selectedIcon = icon),
                   child: CircleAvatar(
-                    child: Icon(icon, color: Colors.white),
                     backgroundColor: _selectedIcon == icon ? Colors.indigo : Colors.grey,
+                    child: Icon(icon, color: Colors.white),
                   ),
                 );
               }).toList(),

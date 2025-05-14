@@ -7,7 +7,7 @@ class CategoryBudgetTile extends StatelessWidget {
   final double? budgetLimit;
   final Color color;
 
-  const CategoryBudgetTile({
+  const CategoryBudgetTile({super.key, 
     required this.categoryName,
     required this.totalSpent,
     required this.color,

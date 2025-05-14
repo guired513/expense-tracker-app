@@ -5,6 +5,8 @@ import '../models/expense.dart';
 import '../widgets/category_budget_tile.dart';
 
 class AnalyticsScreen extends StatelessWidget {
+  const AnalyticsScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     final categoryBox = Hive.box<Category>('categoriesBox');

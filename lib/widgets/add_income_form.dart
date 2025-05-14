@@ -4,6 +4,8 @@ import 'package:hive_flutter/hive_flutter.dart';
 import '../models/category.dart';
 
 class AddIncomeForm extends StatefulWidget {
+  const AddIncomeForm({super.key});
+
   @override
   State<AddIncomeForm> createState() => _AddIncomeFormState();
 }

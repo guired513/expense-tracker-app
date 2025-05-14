@@ -10,11 +10,17 @@ import '../widgets/expense_tile.dart';
 import '../widgets/summary_card.dart';
 import 'category_screen.dart';
 import 'analytics_screen.dart';
+import 'package:expense_tracker_app/screens/chart_screen.dart';
+import 'package:expense_tracker_app/screens/settings_screen.dart';
 
+
+int _selectedIndex = 0;
 
 
 
 class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
@@ -124,51 +130,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        foregroundColor: Colors.white,
-        titleSpacing: 0,
-        title: Row(
-          children: [
-            const SizedBox(width: 12),
-            const Icon(Icons.wallet, size: 26),
-            const SizedBox(width: 8),
-            const Expanded(
-              child: Text(
-                'Expense Tracker',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ],
-        ),
+        title: Text('Expense Tracker'),
         actions: [
           IconButton(
-            icon: const Icon(Icons.date_range),
-            tooltip: 'Filter by Date',
+            icon: Icon(Icons.calendar_today),
             onPressed: _pickDate,
-          ),
-          IconButton(
-            icon: const Icon(Icons.clear),
-            tooltip: 'Clear Filter',
-            onPressed: _resetDateFilter,
-          ),
-          IconButton(
-            icon: const Icon(Icons.pie_chart_outline),
-            tooltip: 'View Analytics',
-            onPressed: () => Navigator.push(context,
-              MaterialPageRoute(builder: (_) => AnalyticsScreen())),
-          ),
-          IconButton(
-            icon: const Icon(Icons.attach_money),
-            tooltip: 'Add Income',
-            onPressed: _openAddIncomeSheet,
-          ),
-          IconButton(
-            icon: const Icon(Icons.settings),
-            tooltip: 'Manage Categories',
-            onPressed: () => Navigator.push(context,
-              MaterialPageRoute(builder: (_) => CategoryScreen())),
           ),
         ],
       ),
@@ -200,8 +166,8 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
           ),
-          /*_buildFilterChips(),*/
-          Container(
+          _buildFilterChips(),
+          /*Container(
             margin: const EdgeInsets.symmetric(vertical: 8),
             height: 48,
             child: ListView.separated(
@@ -240,7 +206,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
               },
             ),
-          ),
+          ),*/
           Expanded(
             child: _filteredExpenses.isEmpty
               ? Center(child: Text('No expenses found.', style: TextStyle(color: Colors.grey)))
@@ -255,6 +221,47 @@ class _HomeScreenState extends State<HomeScreen> {
         onPressed: _openAddExpenseSheet,
         icon: Icon(Icons.add),
         label: Text("Add Expense"),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex,
+        onTap: (index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+
+          // Navigate or show modal
+          switch (index) {
+            case 0:
+              // Home - do nothing
+              break;
+            case 1:
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => CategoryScreen()),
+              );
+              break;
+            case 2:
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => ChartScreen()),
+              );
+              break;
+            case 3:
+              // Optional: implement SettingsScreen
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => SettingsScreen()),
+              );
+              break;
+          }
+        },
+        type: BottomNavigationBarType.fixed,
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.category), label: 'Categories'),
+          BottomNavigationBarItem(icon: Icon(Icons.pie_chart), label: 'Charts'),
+          BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Settings'),
+        ],
       ),
     );
   }
@@ -323,5 +330,7 @@ class _HomeScreenState extends State<HomeScreen> {
         .whereType<dynamic>()
         .fold(0.0, (sum, item) => sum + (item.amount ?? 0));
   }
+
+
 
 }
