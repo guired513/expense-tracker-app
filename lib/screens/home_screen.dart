@@ -309,12 +309,15 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               Icon(icon, size: 32, color: color),
               const SizedBox(height: 8),
-              Text(
-                '₱${amount.toStringAsFixed(2)}',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: color,
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  '₱${amount.toStringAsFixed(2)}',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.green,
+                  ),
                 ),
               ),
               const SizedBox(height: 4),
