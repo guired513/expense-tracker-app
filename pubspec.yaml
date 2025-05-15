@@ -1,4 +1,4 @@
-name: expense_tracker_app
+name: kwartako
 description: "A new Flutter project."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -107,11 +107,14 @@ flutter_icons:
   image_path: "assets/logo/KawrtaKo.png"
   remove_alpha_ios: true
 
-flutter_native_splash:
-  color: "#F6FFF3"
-  image: assets/logo/KawrtaKo.png
-  #branding: assets/logo/branding_text.png
-  android_gravity: center
-  ios_content_mode: scaleAspectFit
+flutter_launcher_name:
+  name: "KwartaKo"
+
+# flutter_native_splash:
+#  color: "#F6FFF3"
+#  image: assets/logo/KawrtaKo.png
+#  branding: assets/logo/branding_text.png
+#  android_gravity: center
+#  ios_content_mode: scaleAspectFit
 
   
