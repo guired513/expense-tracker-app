@@ -132,9 +132,25 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: Text('Expense Tracker'),
         actions: [
-          IconButton(
-            icon: Icon(Icons.calendar_today),
-            onPressed: _pickDate,
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                icon: const Icon(Icons.calendar_today),
+                tooltip: 'Pick Date',
+                onPressed: _pickDate,
+              ),
+              if (_selectedDate != null)
+                IconButton(
+                  icon: const Icon(Icons.clear),
+                  tooltip: 'Clear Date Filter',
+                  onPressed: () {
+                    setState(() {
+                      _selectedDate = null;
+                    });
+                  },
+                ),
+            ],
           ),
         ],
       ),

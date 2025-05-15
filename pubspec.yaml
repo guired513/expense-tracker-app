@@ -38,6 +38,8 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
+  flutter_launcher_icons: ^0.14.3
+  flutter_native_splash: ^2.4.6
 
 dev_dependencies:
   flutter_test:
@@ -98,3 +100,18 @@ fonts:
       - asset: assets/fonts/Poppins-Regular.ttf
       - asset: assets/fonts/Poppins-Bold.ttf
         weight: 700
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/logo/KawrtaKo.png"
+  remove_alpha_ios: true
+
+flutter_native_splash:
+  color: "#F6FFF3"
+  image: assets/logo/KawrtaKo.png
+  #branding: assets/logo/branding_text.png
+  android_gravity: center
+  ios_content_mode: scaleAspectFit
+
+  
