@@ -40,6 +40,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   flutter_launcher_icons: ^0.14.3
   flutter_native_splash: ^2.4.6
+  change_app_package_name: ^1.5.0
 
 dev_dependencies:
   flutter_test:
@@ -52,13 +53,18 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^5.0.0
+  # flutter_launcher_name_updated: ^1.0.8
+
+# flutter_launcher_name:
+#  name: "KwartaKo"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter packages.
 flutter:
-
+  assets:
+    - assets/logo/KawrtaKo.png
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
@@ -107,14 +113,14 @@ flutter_icons:
   image_path: "assets/logo/KawrtaKo.png"
   remove_alpha_ios: true
 
-flutter_launcher_name:
-  name: "KwartaKo"
 
-# flutter_native_splash:
-#  color: "#F6FFF3"
-#  image: assets/logo/KawrtaKo.png
-#  branding: assets/logo/branding_text.png
-#  android_gravity: center
-#  ios_content_mode: scaleAspectFit
+flutter_native_splash:
+  color: "#F6FFF3"
+  image: assets/logo/KawrtaKo.png
+  android_gravity: center
+  ios_content_mode: scaleAspectFit
+  fullscreen: true
+
+
 
   

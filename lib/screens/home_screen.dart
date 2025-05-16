@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:intl/intl.dart';
 
 import '../models/expense.dart';
 import '../models/income.dart';
 import '../widgets/add_expense_form.dart';
 import '../widgets/add_income_form.dart';
 import '../widgets/expense_tile.dart';
-import '../widgets/summary_card.dart';
 import 'category_screen.dart';
-import 'analytics_screen.dart';
-import 'package:expense_tracker_app/screens/chart_screen.dart';
-import 'package:expense_tracker_app/screens/settings_screen.dart';
+import 'package:kwartako/screens/chart_screen.dart';
+import 'package:kwartako/screens/settings_screen.dart';
 
 
 int _selectedIndex = 0;
