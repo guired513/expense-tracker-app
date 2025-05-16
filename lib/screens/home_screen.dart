@@ -132,10 +132,39 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: Text('Expense Tracker'),
         actions: [
-          IconButton(
+          Row(
+            children: [
+              IconButton(
+                icon: Icon(Icons.calendar_today),
+                onPressed: () async {
+                  DateTime? pickedDate = await showDatePicker(
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime(2000),
+                    lastDate: DateTime(2100),
+                  );
+                  if (pickedDate != null) {
+                    setState(() {
+                      _selectedDate = pickedDate;
+                    });
+                  }
+                },
+              ),
+              if (_selectedDate != null)
+                IconButton(
+                  icon: Icon(Icons.clear),
+                  onPressed: () {
+                    setState(() {
+                      _selectedDate = null;
+                    });
+                  },
+                ),
+            ],
+          ),
+          /*IconButton(
             icon: Icon(Icons.calendar_today),
             onPressed: _pickDate,
-          ),
+          ), */
         ],
       ),
       body: Column(
