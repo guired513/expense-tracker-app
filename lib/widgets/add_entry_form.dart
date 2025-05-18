@@ -1,132 +1,117 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import '../models/category.dart';
 import '../models/expense.dart';
+import '../models/income.dart';
+
 class AddEntryForm extends StatefulWidget {
-  const AddEntryForm({super.key});
+  final List<String> expenseCategories;
+  final List<String> incomeCategories;
+
+  const AddEntryForm({
+    Key? key,
+    required this.expenseCategories,
+    required this.incomeCategories,
+  }) : super(key: key);
 
   @override
-  _AddEntryFormState createState() => _AddEntryFormState();
+  State<AddEntryForm> createState() => _AddEntryFormState();
 }
-
-
 
 class _AddEntryFormState extends State<AddEntryForm> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _amountController = TextEditingController();
-  final TextEditingController _descController = TextEditingController();
+  bool _isIncome = false;
+  String _description = '';
+  double _amount = 0.0;
+  String? _selectedCategory;
+  late final List<String> expenseCategories;
+  late final List<String> incomeCategories; 
 
+  late List<String> categories;
+  late String entryType;
 
-  DateTime _selectedDate = DateTime.now();
+  
+  
 
-  final List<String> _categories = ['Food', 'Transport', 'Bills', 'Shopping', 'Others'];
-
-  late Box<Category> _categoryBox;
-  List<Category> _expenseCategories = [];
-  Category? _selectedCategory;
 
   @override
   void initState() {
     super.initState();
-    _categoryBox = Hive.box<Category>('categoriesBox');
-    _expenseCategories = _categoryBox.values
-        .where((c) => c.type == 'expense')
-        .toList();
+    expenseCategories = widget.expenseCategories;
+    incomeCategories = widget.incomeCategories;
+    categories = _isIncome ? widget.incomeCategories : widget.expenseCategories;
+    entryType = _isIncome ? "Income" : "Expense";
   }
-
-  void _submitForm() {
-    if (_formKey.currentState!.validate() && _selectedCategory != null) {
-      final expense = {
-        'amount': double.parse(_amountController.text),
-        'description': _descController.text,
-        'category': _selectedCategory!.name,
-        'date': _selectedDate,
-      };
-
-      Navigator.pop<Map<String, dynamic>>(context, expense);
-    }
-  }
-
-  void _presentDatePicker() async {
-    final picked = await showDatePicker(
-      context: context,
-      initialDate: _selectedDate,
-      firstDate: DateTime(2020),
-      lastDate: DateTime.now(),
-    );
-
-    if (picked != null) {
-      setState(() {
-        _selectedDate = picked;
-      });
-    }
-  }
-
+  
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Form(
-        key: _formKey,
-        child: Wrap(
-          runSpacing: 16,
-          children: [
-            Text(
-              'Add Expense',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            TextFormField(
-              controller: _amountController,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(labelText: 'Amount'),
-              validator: (value) => value!.isEmpty ? 'Enter amount' : null,
-            ),
-            DropdownButtonFormField<Category>(
-              value: _selectedCategory,
-              decoration: InputDecoration(labelText: 'Category'),
-              items: _expenseCategories
-                  .map((cat) => DropdownMenuItem(
-                        value: cat,
-                        child: Text(cat.name),
+    final categories = _isIncome ? widget.incomeCategories : widget.expenseCategories;
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(_isIncome ? 'Add Income' : 'Add Expense'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Form(
+          key: _formKey,
+          child: ListView(
+            children: [
+              SwitchListTile(
+                title: Text('Is this Income?'),
+                value: _isIncome,
+                onChanged: (val) => setState(() => _isIncome = val),
+              ),
+              TextFormField(
+                decoration: const InputDecoration(labelText: 'Description'),
+                validator: (val) => val == null || val.isEmpty ? 'Enter description' : null,
+                onSaved: (val) => _description = val!,
+              ),
+              const SizedBox(height: 15),
+              TextFormField(
+                decoration: const InputDecoration(labelText: 'Amount'),
+                keyboardType: TextInputType.number,
+                validator: (val) => val == null || double.tryParse(val) == null
+                    ? 'Enter a valid amount'
+                    : null,
+                onSaved: (val) => _amount = double.parse(val!),
+              ),
+              const SizedBox(height: 15),
+              DropdownButtonFormField<String>(
+                decoration: InputDecoration(labelText: 'Category'),
+                value: _selectedCategory,
+                items: (_isIncome ? widget.incomeCategories : widget.expenseCategories)
+                  .map((category) => DropdownMenuItem(
+                        value: category,
+                        child: Text(category),
                       ))
                   .toList(),
-              onChanged: (val) => setState(() => _selectedCategory = val),
-              validator: (val) => val == null ? 'Select a category' : null,
-            ),
-            TextFormField(
-              controller: _descController,
-              decoration: InputDecoration(labelText: 'Description'),
-              validator: (value) => value!.isEmpty ? 'Enter description' : null,
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    'Date: ${DateFormat.yMMMd().format(_selectedDate)}',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ),
-                TextButton(
-                  onPressed: _presentDatePicker,
-                  child: Text('Change Date'),
-                ),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context, null),
-                  child: Text('Cancel'),
-                ),
-                ElevatedButton(onPressed: _submitForm, child: Text('Save')),
-              ],
-            ),
-          ],
+                onChanged: (val) => setState(() => _selectedCategory = val),
+                validator: (val) => val == null ? 'Please select a category' : null,
+              ),
+              const SizedBox(height: 30),
+              ElevatedButton(
+                child: const Text('Save Entry'),
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    _formKey.currentState!.save();
+                    final now = DateTime.now();
+
+                    final entry = _isIncome
+                        ? Income(amount: _amount, categoryName: _selectedCategory!, date: now)
+                        : Expense(
+                            description: _description,
+                            amount: _amount,
+                            categoryName: _selectedCategory!,
+                            date: now,
+                          );
+
+                    Navigator.pop(context, entry);
+                  }
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 }
-

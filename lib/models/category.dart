@@ -4,32 +4,34 @@ import 'package:hive/hive.dart';
 part 'category.g.dart';
 
 @HiveType(typeId: 2)
-class Category {
+class Category extends HiveObject {
   @HiveField(0)
-  final String name;
+  late String categoryName;
 
   @HiveField(1)
-  final int colorValue; // store color as int
+  late String type; // "Income" or "Expense"
 
   @HiveField(2)
-  final int iconCodePoint; // store icon code point
+  final int colorValue; // store color as int
 
   @HiveField(3)
-  final String iconFontFamily; // store icon font family
+  final int iconCodePoint; // store icon code point
 
   @HiveField(4)
-  final double? budgetLimit;
+  final String iconFontFamily; // store icon font family
 
   @HiveField(5)
-  final String type;
+  final double? budgetLimit;
+
+
 
   Category({
-    required this.name,
+    required this.categoryName,
+    required this.type,
     required this.colorValue,
     required this.iconCodePoint,
     required this.iconFontFamily,
     this.budgetLimit,
-    required this.type,
   });
 
   Color get color => Color(colorValue);

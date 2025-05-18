@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 
 import '../models/expense.dart';
 import '../models/income.dart';
+import '../models/category.dart';
 
 import '../widgets/expense_tile.dart';
 import '../widgets/summary_card.dart';
@@ -12,12 +13,14 @@ import 'analytics_screen.dart';
 import 'chart_screen.dart';
 import 'settings_screen.dart';
 import '../widgets/add_entry_form.dart';
+import 'package:hive/hive.dart';
 
 final List<Income> _incomes = [];
 
 int _selectedIndex = 0;
 
-
+final expenseBox = Hive.box<Expense>('expenses');
+final incomeBox = Hive.box<Income>('incomes');
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -32,14 +35,13 @@ class _HomeScreenState extends State<HomeScreen> {
   late Box<Income> _incomeBox;
   DateTime? _selectedDate;
   String _selectedCategory = 'All';
-
-  
-
+  late final Box<Category> _categoryBox;
   @override
   void initState() {
     super.initState();
     _expenseBox = Hive.box<Expense>('expensesBox');
     _incomeBox = Hive.box<Income>('incomeBox');
+    _categoryBox = Hive.box<Category>('categories');
   }
   List<String> get _availableCategories => _allCategories;
   List<Expense> get _expenses => _expenseBox.values.toList();
@@ -67,7 +69,18 @@ class _HomeScreenState extends State<HomeScreen> {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       builder: (_) => Padding(
         padding: MediaQuery.of(context).viewInsets,
-        child: AddEntryForm(),
+        child: AddEntryForm(
+          expenseCategories: _categoryBox.values
+            .where((c) => c.type == 'Expense')
+            .map((c) => c.categoryName)
+            .toSet()
+            .toList(),
+          incomeCategories: _categoryBox.values
+              .where((c) => c.type == 'Income')
+              .map((c) => c.categoryName)
+              .toSet()
+              .toList(),
+        ),
       ),
     );
     if (result != null) {
@@ -91,7 +104,10 @@ class _HomeScreenState extends State<HomeScreen> {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       builder: (_) => Padding(
         padding: MediaQuery.of(context).viewInsets,
-        child: AddEntryForm(),
+        child: AddEntryForm(
+          expenseCategories: expenseBox.values.map((e) => e.categoryName).toSet().toList(),
+          incomeCategories: incomeBox.values.map((e) => e.categoryName).toSet().toList(),
+        ),
       ),
     );
     if (result != null) {
@@ -209,35 +225,51 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-     floatingActionButton: FloatingActionButton.extended(
-      onPressed: () async {
-        final result = await showModalBottomSheet<Map<String, dynamic>>(
-          context: context,
-          isScrollControlled: true,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-          ),
-          builder: (_) => Padding(
-            padding: MediaQuery.of(context).viewInsets,
-            child: AddEntryForm(), // or AddEntryForm() if that's what you renamed
-          ),
-        );
-    if (result != null) {
-      setState(() {
-        _expenseBox.add(
-          Expense(
-            amount: result['amount'],
-            categoryName: result['category'],
-            description: result['description'],
-            date: result['date'],
-          ),
-        );
-      });
-    }
-  },
-  label: const Text('Add Expense'),
-  icon: const Icon(Icons.add),
-),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          final result = await showModalBottomSheet<Map<String, dynamic>>(
+            context: context,
+            isScrollControlled: true,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+            ),
+            builder: (_) => Padding(
+              padding: MediaQuery.of(context).viewInsets,
+              child: AddEntryForm(
+                expenseCategories: _categoryBox.values
+                    .where((c) => c.type == 'Expense')
+                    .map((c) => c.categoryName)
+                    .toSet()
+                    .toList(),
+                incomeCategories: _categoryBox.values
+                    .where((c) => c.type == 'Income')
+                    .map((c) => c.categoryName)
+                    .toSet()
+                    .toList(),
+              ),
+            ),
+          );
+
+          if (result != null) {
+            if (result['isIncome'] == true) {
+              incomeBox.add(Income(
+                amount: result['amount'],
+                categoryName: result['category'],
+                date: DateTime.now(),
+              ));
+            } else {
+              expenseBox.add(Expense(
+                description: result['description'],
+                amount: result['amount'],
+                categoryName: result['category'],
+                date: DateTime.now(),
+              ));
+            }
+            setState(() {}); // To refresh the UI
+          }
+        },
+        child: Icon(Icons.add),
+      ),//floating button
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: (index) {
@@ -304,8 +336,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
   
-
-  
   Widget _buildSummaryCard({
     required IconData icon,
     required String label,
@@ -361,19 +391,40 @@ class _HomeScreenState extends State<HomeScreen> {
             title: Text('Add Income'),
             onTap: () async {
               Navigator.pop(context);
+              final Set<String> allCategories = {
+                for (var e in _expenseBox.values) e.categoryName,
+                for (var i in _incomeBox.values) i.categoryName,
+              };
               final result = await Navigator.push(
                 context,
-                MaterialPageRoute(builder: (_) => AddEntryForm()),
+                MaterialPageRoute(builder: (_) => AddEntryForm(
+                  expenseCategories: expenseBox.values.map((e) => e.categoryName).toSet().toList(),
+                  incomeCategories: incomeBox.values.map((e) => e.categoryName).toSet().toList(),
+                )),
               );
+
               if (result != null) {
-                _incomeBox.add(
-                  Income(
-                    amount: result['amount'],
-                    categoryName: result['category'],
-                    date: result['date'],
-                  ),
-                );
-                setState(() {}); // Refresh the screen
+                final newEntry = result;
+                final isIncome = newEntry['isIncome'] as bool;
+
+                if (isIncome) {
+                  final income = Income(
+                    amount: newEntry['amount'],
+                    categoryName: newEntry['category'],
+                    date: DateTime.now(),
+                  );
+                  await _incomeBox.add(income);
+                } else {
+                  final expense = Expense(
+                    description: newEntry['description'],
+                    amount: newEntry['amount'],
+                    categoryName: newEntry['category'],
+                    date: DateTime.now(),
+                  );
+                  await _expenseBox.add(expense);
+                }
+
+                setState(() {}); // Refresh the UI
               }
             },
           ),
@@ -382,9 +433,16 @@ class _HomeScreenState extends State<HomeScreen> {
             title: Text('Add Expense'),
             onTap: () async {
               Navigator.pop(context);
+              final Set<String> allCategories = {
+                for (var e in _expenseBox.values) e.categoryName,
+                for (var i in _incomeBox.values) i.categoryName,
+              };
               final result = await Navigator.push(
                 context,
-                MaterialPageRoute(builder: (_) => AddEntryForm()),
+                MaterialPageRoute(builder: (_) => AddEntryForm(
+                  expenseCategories: expenseBox.values.map((e) => e.categoryName).toSet().toList(),
+                  incomeCategories: incomeBox.values.map((e) => e.categoryName).toSet().toList(),
+                )),
               );
               if (result != null) {
                 _expenseBox.add(

@@ -25,8 +25,8 @@ class AnalyticsScreen extends StatelessWidget {
       body: ListView(
         children: categories.map((cat) {
           return CategoryBudgetTile(
-            categoryName: cat.name,
-            totalSpent: totals[cat.name] ?? 0,
+            categoryName: cat.categoryName,
+            totalSpent: totals[cat.categoryName] ?? 0,
             budgetLimit: cat.budgetLimit,
             color: cat.color,
           );

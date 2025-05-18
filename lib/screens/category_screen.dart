@@ -21,7 +21,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
 
   void _addCategory(String name, String type, Color color, IconData icon, double? budget) {
     final newCategory = Category(
-      name: name,
+      categoryName: name,
       colorValue: color.value,
       iconCodePoint: icon.codePoint,
       iconFontFamily: icon.fontFamily ?? 'MaterialIcons',
@@ -56,7 +56,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                   backgroundColor: c.color,
                   child: Icon(c.icon, color: Colors.white),
                 ),
-                title: Text(c.name),
+                title: Text(c.categoryName),
                 subtitle: Text('${c.type.capitalize()}'
                     '${c.budgetLimit != null ? ' • Budget: ₱${c.budgetLimit!.toStringAsFixed(2)}' : ''}'),
               );

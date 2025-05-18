@@ -17,12 +17,12 @@ class CategoryAdapter extends TypeAdapter<Category> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Category(
-      name: fields[0] as String,
-      colorValue: fields[1] as int,
-      iconCodePoint: fields[2] as int,
-      iconFontFamily: fields[3] as String,
-      budgetLimit: fields[4] as double?,
-      type: fields[5] as String,
+      categoryName: fields[0] as String,
+      type: fields[1] as String,
+      colorValue: fields[2] as int,
+      iconCodePoint: fields[3] as int,
+      iconFontFamily: fields[4] as String,
+      budgetLimit: fields[5] as double?,
     );
   }
 
@@ -31,17 +31,17 @@ class CategoryAdapter extends TypeAdapter<Category> {
     writer
       ..writeByte(6)
       ..writeByte(0)
-      ..write(obj.name)
+      ..write(obj.categoryName)
       ..writeByte(1)
-      ..write(obj.colorValue)
+      ..write(obj.type)
       ..writeByte(2)
-      ..write(obj.iconCodePoint)
+      ..write(obj.colorValue)
       ..writeByte(3)
-      ..write(obj.iconFontFamily)
+      ..write(obj.iconCodePoint)
       ..writeByte(4)
-      ..write(obj.budgetLimit)
+      ..write(obj.iconFontFamily)
       ..writeByte(5)
-      ..write(obj.type);
+      ..write(obj.budgetLimit);
   }
 
   @override
