@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import '../models/category.dart';
+import '../models/income.dart';
 
 class AddIncomeForm extends StatefulWidget {
   const AddIncomeForm({super.key});
@@ -15,6 +16,7 @@ class _AddIncomeFormState extends State<AddIncomeForm> {
   final _amountController = TextEditingController();
   final _sourceController = TextEditingController();
   DateTime _selectedDate = DateTime.now();
+  
 
   late Box<Category> _categoryBox;
   List<Category> _incomeCategories = [];

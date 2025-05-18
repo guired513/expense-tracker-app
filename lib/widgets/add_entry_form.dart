@@ -3,16 +3,16 @@ import 'package:intl/intl.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import '../models/category.dart';
 import '../models/expense.dart';
-class AddExpenseForm extends StatefulWidget {
-  const AddExpenseForm({super.key});
+class AddEntryForm extends StatefulWidget {
+  const AddEntryForm({super.key});
 
   @override
-  _AddExpenseFormState createState() => _AddExpenseFormState();
+  _AddEntryFormState createState() => _AddEntryFormState();
 }
 
 
 
-class _AddExpenseFormState extends State<AddExpenseForm> {
+class _AddEntryFormState extends State<AddEntryForm> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _amountController = TextEditingController();
   final TextEditingController _descController = TextEditingController();
@@ -129,3 +129,4 @@ class _AddExpenseFormState extends State<AddExpenseForm> {
     );
   }
 }
+

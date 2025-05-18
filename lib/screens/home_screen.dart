@@ -4,15 +4,16 @@ import 'package:intl/intl.dart';
 
 import '../models/expense.dart';
 import '../models/income.dart';
-import '../widgets/add_expense_form.dart';
-import '../widgets/add_income_form.dart';
+
 import '../widgets/expense_tile.dart';
 import '../widgets/summary_card.dart';
 import 'category_screen.dart';
 import 'analytics_screen.dart';
-import 'package:expense_tracker_app/screens/chart_screen.dart';
-import 'package:expense_tracker_app/screens/settings_screen.dart';
+import 'chart_screen.dart';
+import 'settings_screen.dart';
+import '../widgets/add_entry_form.dart';
 
+final List<Income> _incomes = [];
 
 int _selectedIndex = 0;
 
@@ -31,6 +32,8 @@ class _HomeScreenState extends State<HomeScreen> {
   late Box<Income> _incomeBox;
   DateTime? _selectedDate;
   String _selectedCategory = 'All';
+
+  
 
   @override
   void initState() {
@@ -64,7 +67,7 @@ class _HomeScreenState extends State<HomeScreen> {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       builder: (_) => Padding(
         padding: MediaQuery.of(context).viewInsets,
-        child: AddExpenseForm(),
+        child: AddEntryForm(),
       ),
     );
     if (result != null) {
@@ -88,7 +91,7 @@ class _HomeScreenState extends State<HomeScreen> {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       builder: (_) => Padding(
         padding: MediaQuery.of(context).viewInsets,
-        child: AddIncomeForm(),
+        child: AddEntryForm(),
       ),
     );
     if (result != null) {
@@ -196,46 +199,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           _buildFilterChips(),
-          /*Container(
-            margin: const EdgeInsets.symmetric(vertical: 8),
-            height: 48,
-            child: ListView.separated(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              itemCount: _availableCategories.length + 1,
-              separatorBuilder: (_, __) => const SizedBox(width: 8),
-              itemBuilder: (context, index) {
-                final isAll = index == 0;
-                final isSelected = isAll
-                    ? _selectedCategoryFilter == null
-                    : _selectedCategoryFilter == _availableCategories[index - 1];
-
-                return ChoiceChip(
-                  label: Text(isAll ? 'All' : _availableCategories[index - 1]),
-                  selected: isSelected,
-                  onSelected: (_) {
-                    setState(() {
-                      _selectedCategoryFilter = isAll ? null : _availableCategories[index - 1];
-                    });
-                  },
-                  selectedColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
-                  labelStyle: TextStyle(
-                    color: isSelected
-                        ? Theme.of(context).colorScheme.primary
-                        : Theme.of(context).colorScheme.onSurface,
-                  ),
-                  backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
-                  shape: StadiumBorder(
-                    side: BorderSide(
-                      color: isSelected
-                          ? Theme.of(context).colorScheme.primary
-                          : Colors.grey.shade300,
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),*/
           Expanded(
             child: _filteredExpenses.isEmpty
               ? Center(child: Text('No expenses found.', style: TextStyle(color: Colors.grey)))
@@ -246,11 +209,35 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: _openAddExpenseSheet,
-        icon: Icon(Icons.add),
-        label: Text("Add Expense"),
-      ),
+     floatingActionButton: FloatingActionButton.extended(
+      onPressed: () async {
+        final result = await showModalBottomSheet<Map<String, dynamic>>(
+          context: context,
+          isScrollControlled: true,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          builder: (_) => Padding(
+            padding: MediaQuery.of(context).viewInsets,
+            child: AddEntryForm(), // or AddEntryForm() if that's what you renamed
+          ),
+        );
+    if (result != null) {
+      setState(() {
+        _expenseBox.add(
+          Expense(
+            amount: result['amount'],
+            categoryName: result['category'],
+            description: result['description'],
+            date: result['date'],
+          ),
+        );
+      });
+    }
+  },
+  label: const Text('Add Expense'),
+  icon: const Icon(Icons.add),
+),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: (index) {
@@ -363,6 +350,59 @@ class _HomeScreenState extends State<HomeScreen> {
         .fold(0.0, (sum, item) => sum + (item.amount ?? 0));
   }
 
+  void _showAddEntrySelector(BuildContext context) async {
+    showModalBottomSheet(
+      context: context,
+      builder: (_) => Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ListTile(
+            leading: Icon(Icons.attach_money),
+            title: Text('Add Income'),
+            onTap: () async {
+              Navigator.pop(context);
+              final result = await Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => AddEntryForm()),
+              );
+              if (result != null) {
+                _incomeBox.add(
+                  Income(
+                    amount: result['amount'],
+                    categoryName: result['category'],
+                    date: result['date'],
+                  ),
+                );
+                setState(() {}); // Refresh the screen
+              }
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.money_off),
+            title: Text('Add Expense'),
+            onTap: () async {
+              Navigator.pop(context);
+              final result = await Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => AddEntryForm()),
+              );
+              if (result != null) {
+                _expenseBox.add(
+                    Expense(
+                      amount: result['amount'],
+                      categoryName: result['category'],
+                      description: result['description'],
+                      date: result['date'],
+                    ),
+                  );
+                setState(() {});
+              }
+            },
+          ),
+        ],
+      ),
+    );
+  }
 
 
 }
