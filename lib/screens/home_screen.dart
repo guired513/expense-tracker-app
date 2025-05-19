@@ -164,10 +164,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
             ],
           ),
-          /*IconButton(
-            icon: Icon(Icons.calendar_today),
-            onPressed: _pickDate,
-          ), */
         ],
       ),
       body: Column(
