@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/intl.dart';
-
 import '../models/expense.dart';
 import '../models/income.dart';
-
 import '../widgets/expense_tile.dart';
 import '../widgets/summary_card.dart';
 import 'category_screen.dart';
@@ -17,23 +15,18 @@ final List<Income> _incomes = [];
 
 int _selectedIndex = 0;
 
-
-
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
-
 class _HomeScreenState extends State<HomeScreen> {
   String? _selectedCategoryFilter;
   late Box<Expense> _expenseBox;
   late Box<Income> _incomeBox;
   DateTime? _selectedDate;
   String _selectedCategory = 'All';
-
-  
 
   @override
   void initState() {
@@ -133,7 +126,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Expense Tracker'),
+        title: Text('KwartaKo'),
         actions: [
           Row(
             children: [
@@ -300,8 +293,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
   
-
-  
   Widget _buildSummaryCard({
     required IconData icon,
     required String label,
@@ -399,6 +390,4 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-
-
 }
