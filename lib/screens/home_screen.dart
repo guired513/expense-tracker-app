@@ -28,6 +28,10 @@ class _HomeScreenState extends State<HomeScreen> {
   DateTime? _selectedDate;
   String _selectedCategory = 'All';
 
+final Box<Expense> expenseBox = Hive.box<Expense>('expenses');
+final Box<Income> incomeBox = Hive.box<Income>('incomes');
+final Box<Category> categoryBox = Hive.box<Category>('categories');
+
   @override
   void initState() {
     super.initState();
@@ -198,35 +202,36 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-     floatingActionButton: FloatingActionButton.extended(
+    floatingActionButton: FloatingActionButton(
       onPressed: () async {
-        final result = await showModalBottomSheet<Map<String, dynamic>>(
-          context: context,
-          isScrollControlled: true,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-          ),
-          builder: (_) => Padding(
-            padding: MediaQuery.of(context).viewInsets,
-            child: AddEntryForm(), // or AddEntryForm() if that's what you renamed
-          ),
-        );
-    if (result != null) {
-      setState(() {
-        _expenseBox.add(
-          Expense(
-            amount: result['amount'],
-            categoryName: result['category'],
-            description: result['description'],
-            date: result['date'],
+        final result = await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => AddEntryForm(
+              expenseCategories: categoryBox.values
+                  .where((c) => c.type == 'Expense')
+                  .map((c) => c.categoryName)
+                  .toSet()
+                  .toList(),
+              incomeCategories: categoryBox.values
+                  .where((c) => c.type == 'Income')
+                  .map((c) => c.categoryName)
+                  .toSet()
+                  .toList(),
+            ),
           ),
         );
-      });
-    }
-  },
-  label: const Text('Add Expense'),
-  icon: const Icon(Icons.add),
-),
+
+        if (result != null) {
+          if (result is Expense) {
+            expenseBox.add(result);
+          } else if (result is Income) {
+            incomeBox.add(result);
+          }
+        }
+      },
+      child: Icon(Icons.add),
+    ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: (index) {
