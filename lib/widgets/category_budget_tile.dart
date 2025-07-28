@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:expense_tracker_app/models/category.dart';
 
 class CategoryBudgetTile extends StatelessWidget {
   final String categoryName;

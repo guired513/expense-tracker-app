@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:intl/intl.dart';
 import '../models/expense.dart';
 import '../models/income.dart';
 import '../widgets/expense_tile.dart';
-import '../widgets/summary_card.dart';
 import 'category_screen.dart';
-import 'analytics_screen.dart';
 import 'chart_screen.dart';
 import 'settings_screen.dart';
 import '../widgets/add_entry_form.dart';

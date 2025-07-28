@@ -11,10 +11,10 @@ class AddEntryForm extends StatefulWidget {
   final List<String> incomeCategories;
 
   const AddEntryForm({
-    Key? key,
+    super.key,
     required this.expenseCategories,
     required this.incomeCategories,
-  }) : super(key: key);
+  });
 
   @override
   State<AddEntryForm> createState() => _AddEntryFormState();

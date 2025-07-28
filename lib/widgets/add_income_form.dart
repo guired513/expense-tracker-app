@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import '../models/category.dart';
-import '../models/income.dart';
 
 class AddIncomeForm extends StatefulWidget {
   const AddIncomeForm({super.key});

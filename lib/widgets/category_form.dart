@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:uuid/uuid.dart';
 
 class CategoryForm extends StatefulWidget {
   final Function(String name, String type, Color color, IconData icon, double? budget) onSubmit;
